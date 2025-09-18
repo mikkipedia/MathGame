@@ -1,7 +1,8 @@
 // ===============================================
-// MathGame – logika aplikace (v3)
+// MathGame – logika aplikace (v4)
 // + Leaderboard (TOP10) a Denní výzva se streakem
 // + Hrát od začátku (Úroveň 1) a Spustit vybranou úroveň
+// + Tlačítko "Menu" kdykoliv během hry (návrat na úvodní obrazovku)
 // ===============================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -56,6 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const leaderboardList= document.getElementById("leaderboardList");
   const lbBackBtn      = document.getElementById("lbBackBtn");
+
+  // NOVÉ: tlačítko Menu v HUDu
+  const menuBtn        = document.getElementById("menuBtn");
 
   // Streak info na úvodní obrazovce
   const streakValueEl  = document.getElementById("streakValue");
@@ -146,6 +150,19 @@ document.addEventListener("DOMContentLoaded", () => {
       progressLabel.textContent = `Otázka 1/1`;
       scoreLabel.textContent = `—`;
     }
+  }
+
+  function goToMenu() {
+    // Návrat do hlavního menu bez ztráty jména hráče (aby nemusel psát znovu)
+    showSection("welcome");
+    // Obnovíme info o streaku v UI
+    initStreak();
+    // Vyčistíme zobrazení kvízu (jen UX)
+    feedback.textContent = "";
+    questionText.textContent = "?";
+    answerInput.value = "";
+    // Reset aktuálního režimu
+    isChallengeMode = false;
   }
 
   // --- 6) Generátor otázek -------------------------------------------------
@@ -362,6 +379,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showSection("welcome");
   });
 
+  // NOVÉ: tlačítko Menu na HUDu – návrat do úvodního menu
+  menuBtn.addEventListener("click", () => {
+    goToMenu();
+  });
+
   submitBtn.addEventListener("click", handleSubmit);
   answerInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") handleSubmit();
@@ -411,15 +433,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   restartBtn.addEventListener("click", () => {
-    showSection("welcome");
-    playerNameInput.focus();
-    initStreak();
+    goToMenu();
   });
 
-  // nové rychlé akce v summary
+  // rychlé akce v summary
   summaryStartBeginningBtn.addEventListener("click", () => {
     showSection("welcome");
-    // pokud je zadané jméno, rovnou startneme 1. úroveň
     const name = (playerNameInput.value || "").trim() || playerName;
     if (!name) {
       playerName = "";
