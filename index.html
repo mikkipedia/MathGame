@@ -2,41 +2,53 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matematická hra - 2. třída</title>
-  <!-- Odkaz na CSS soubor -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MathGame – 2. třída</title>
+
+  <!-- Externí CSS (ponecháš svůj style.css) -->
   <link rel="stylesheet" href="style.css" />
-  <!-- Supabase JS knihovna (cdn) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Náš JavaScript soubor -->
+
+  <!-- Supabase knihovna MUSÍ být načtena dřív než náš skript -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Logika aplikace -->
   <script defer src="script.js"></script>
 </head>
-  <!-- Načtení Supabase knihovny z CDN (verze 2.x) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Načtení hlavního skriptu aplikace -->
-<script src="./script.js"></script>
-
 <body>
-
-  <div id="start-screen">
-    <h1>Procvičování matematiky – 2.&nbsp;třída</h1>
-    <p>Jméno hráče: <input type="text" id="playerName" placeholder="Zadej své jméno" /></p>
+  <!-- Start obrazovka -->
+  <section id="welcome-screen">
+    <h1>Procvičování matematiky – 2. třída</h1>
+    <p>
+      Jméno hráče:
+      <input id="playerName" type="text" placeholder="Zadej své jméno" />
+    </p>
     <button id="startBtn">Začít hru</button>
-  </div>
+  </section>
 
-  <div id="question-screen" style="display:none;">
-    <h2 id="levelTitle"></h2>
-    <p id="questionText"></p>
-    <input type="number" id="answerInput" placeholder="Vaše odpověď" />
-    <button id="submitAnswerBtn">Odpovědět</button>
-    <p id="feedback"></p>
-  </div>
+  <!-- Herní obrazovka -->
+  <section id="quiz-screen" style="display:none;">
+    <div id="hud">
+      <strong id="levelLabel">Úroveň 1</strong> ·
+      <span id="progressLabel">Otázka 1/10</span> ·
+      <span id="scoreLabel">Skóre: 0</span>
+    </div>
 
-  <div id="result-screen" style="display:none;">
-    <h2>Konec hry</h2>
-    <p id="finalScoreText"></p>
-    <button id="restartBtn">Hrát znovu</button>
-  </div>
+    <div id="question-container">
+      <div id="questionText">?</div>
+      <input id="answerInput" type="number" inputmode="numeric" placeholder="Odpověď" />
+      <button id="submitBtn">Odpovědět</button>
+      <div id="feedback" aria-live="polite"></div>
+    </div>
+  </section>
 
+  <!-- Shrnutí úrovně -->
+  <section id="summary-screen" style="display:none;">
+    <h2 id="summaryTitle">Shrnutí</h2>
+    <p id="summaryText"></p>
+    <div>
+      <button id="nextLevelBtn">Další úroveň</button>
+      <button id="retryBtn">Opakovat úroveň</button>
+      <button id="restartBtn">Zpět na začátek</button>
+    </div>
+  </section>
 </body>
 </html>
