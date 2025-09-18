@@ -5,18 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MathGame – 2. třída</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 
+  <!-- Supabase knihovna -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Logika hry -->
   <script defer src="script.js"></script>
 
-  <!-- Theme toggle (dark / light) -->
+  <!-- Theme toggle (light/dark) – uložení volby -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("mathgame-theme");
@@ -33,7 +37,7 @@
   </script>
 </head>
 <body>
-  <!-- Start obrazovka -->
+  <!-- Úvod -->
   <section id="welcome-screen" class="screen is-active">
     <div class="screen-head">
       <h1>Procvičování matematiky – 2. třída</h1>
@@ -72,7 +76,7 @@
     </p>
   </section>
 
-  <!-- Herní obrazovka -->
+  <!-- Hra -->
   <section id="quiz-screen" class="screen">
     <div id="hud">
       <strong id="levelLabel">Úroveň 1</strong> ·
