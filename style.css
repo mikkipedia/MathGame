@@ -1,113 +1,85 @@
-/* =========================================
-   Pop Minimalism UI pro MathGame
-   - čistý neutrální základ
-   - syté akcenty jen na důležitých místech
-   - karty, měkké radiusy, jemné stíny
-   - bez zásahu do JS nebo HTML struktury
-========================================= */
-
-/* ---------- CSS proměnné (paleta & rádiusy) ---------- */
+/* ----------- LIGHT THEME VARIABLES ----------- */
 :root{
-  /* Základ (air/neutral) */
-  --bg: #f6f8fb;              /* velmi světlá modro-šedá */
-  --card: #ffffff;            /* karty/sekce */
-  --text: #222;               /* primární text */
-  --text-mid: #444;           /* sekundární text */
-  --muted: #8a8f98;           /* popisky, hinty */
-  --border: #e6e9ef;          /* jemné okraje */
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #222;
+  --text-mid: #444;
+  --muted: #8a8f98;
+  --border: #e6e9ef;
 
-  /* Akcenty (syté – používat střídmě) */
-  --accent-blue: #2554ff;     /* cobalt blue */
-  --accent-coral: #ff4e6a;    /* hot coral */
-  --accent-orange: #ff8a00;   /* citrus orange */
-  --accent-purple: #8a3ffc;   /* neon purple */
-  --accent-lime: #3ddc84;     /* lime green */
+  --accent-blue: #2554ff;
+  --accent-coral: #ff4e6a;
+  --accent-orange: #ff8a00;
+  --accent-purple: #8a3ffc;
+  --accent-lime: #3ddc84;
 
-  /* UI */
-  --radius-lg: 16px;          /* 12–20px radius */
+  --radius-lg: 16px;
   --radius-sm: 12px;
   --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
   --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
   --shadow-hover: 0 10px 28px rgba(15, 23, 42, 0.10);
 
-  /* Typografie & rytmus */
-  --font: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --font: "Inter", sans-serif;
   --line: 1.45;
   --container: 900px;
 }
 
+/* ----------- DARK THEME OVERRIDES ----------- */
+:root.dark{
+  --bg: #0e1116;
+  --card: #1a1f27;
+  --text: #f3f4f6;
+  --text-mid: #cbd5e1;
+  --muted: #94a3b8;
+  --border: #2d323d;
+  --shadow: 0 6px 20px rgba(0,0,0,0.45);
+  --shadow-sm: 0 3px 10px rgba(0,0,0,0.4);
+  --shadow-hover: 0 8px 20px rgba(0,0,0,0.5);
+}
+
 /* ---------- Global ---------- */
-*{ box-sizing: border-box; }
-html, body{ height: 100%; }
 body{
   margin: 0;
   font-family: var(--font);
   line-height: var(--line);
   color: var(--text);
-  background: radial-gradient(1200px 800px at 100% -20%, #eef3ff 0%, transparent 40%),
-              radial-gradient(1000px 700px at -10% 110%, #eefdf6 0%, transparent 40%),
-              var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg);
   display: flex;
-  align-items: flex-start;
   justify-content: center;
   padding: 32px 20px 56px;
+  transition: background .3s ease, color .3s ease;
 }
 
-/* Kontejner – každá sekce je karta */
 section{
-  width: 100%;
-  max-width: var(--container);
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   padding: 28px;
   margin: 18px auto;
+  width: 100%;
+  max-width: var(--container);
+  transition: background .3s ease, box-shadow .3s ease, border .3s ease;
 }
 
-/* Hlavičky */
-h1, h2{
-  margin: 0 0 12px;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
+h1,h2{ color: var(--text); margin: 0 0 12px; }
 h1{ font-weight: 800; font-size: clamp(24px, 3.2vw, 32px); }
 h2{ font-weight: 700; font-size: clamp(18px, 2.2vw, 22px); }
 
-p{ color: var(--text-mid); margin: 8px 0 12px; }
+p{ color: var(--text-mid); }
 
-/* ---------- Inputs & Selects ---------- */
-input[type="text"],
-input[type="number"],
-select{
+input, select{
   font: inherit;
   color: var(--text);
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px 14px;
-  min-width: 220px;
-  outline: none;
-  transition: box-shadow .2s ease, border-color .2s ease, transform .05s ease;
-  box-shadow: 0 0 0 0 rgba(37,84,255,0);
+  transition: background .3s ease, border .3s ease, color .3s ease;
 }
-input::placeholder{ color: #a3a9b5; }
-input:focus,
-select:focus{
-  border-color: #cfd5e2;
-  box-shadow: 0 0 0 6px rgba(37,84,255,0.10);
-}
-#answerInput{
-  width: 160px;
-  text-align: center;
-  font-weight: 600;
-}
+input::placeholder{ color: var(--muted); }
 
-/* ---------- Buttons (pill) ---------- */
 button{
-  appearance: none;
   font: inherit;
   font-weight: 700;
   color: #fff;
@@ -117,150 +89,59 @@ button{
   padding: 12px 18px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: transform .06s ease, box-shadow .2s ease, filter .2s ease;
-  will-change: transform;
+  transition: background .3s ease, transform .05s ease;
 }
-button:hover{ box-shadow: var(--shadow-hover); filter: brightness(0.98); }
-button:active{ transform: translateY(1px) scale(0.99); }
-button[disabled]{ opacity: .6; cursor: not-allowed; }
-
-/* Akcentové varianty podle funkce (mapujeme ID → barva) */
-#startBeginningBtn,
-#startSelectedBtn,
-#submitBtn,
-#nextLevelBtn,
-#summaryLbBtn,
-#showLbBtn{ background: var(--accent-blue); }
+button:hover{ transform: translateY(-1px); }
 
 #dailyBtn{ background: var(--accent-coral); }
 #retryBtn{ background: var(--accent-purple); }
-#restartBtn,
-#lbBackBtn,
-#menuBtn{ background: #111; } /* kontrastní černá pro navigační akce */
-
+#restartBtn,#lbBackBtn,#menuBtn{ background: #000; }
 #summaryStartBeginningBtn{ background: var(--accent-lime); }
 #summaryGoToLevelSelectBtn{ background: var(--accent-orange); }
 
-/* Sekundární (textové) prvky & odkazy uvnitř karet */
-a, .link{
-  color: var(--accent-blue);
-  text-decoration: none;
-  font-weight: 600;
-}
-a:hover{ text-decoration: underline; }
-
-/* ---------- HUD (horní pruh ve hře) ---------- */
+/* HUD */
 #hud{
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
-  background: #f7f9ff;
+  background: rgba(0,0,0,0.03);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
-  box-shadow: inset 0 -1px 0 #eef1f7;
 }
-#hud strong{ font-weight: 800; }
-#hud span{
-  color: #0f172a;
-  font-weight: 600;
-}
+:root.dark #hud{ background: rgba(255,255,255,0.05); }
 
-/* ---------- Question card ---------- */
+/* Question card */
 #question-container{
   margin-top: 14px;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: 20px;
-  display: grid;
-  gap: 14px;
-  justify-items: center;
+  text-align: center;
+  transition: background .3s ease;
 }
 #questionText{
   font-size: clamp(22px, 3.4vw, 30px);
   font-weight: 800;
-  letter-spacing: .02em;
 }
 
-/* ---------- Feedback chip ---------- */
+/* Feedback */
 #feedback{
-  min-height: 24px;
   font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #f6f8fb;
-  color: var(--muted);
-  box-shadow: inset 0 -1px 0 #eef1f7;
-}
-#feedback:empty{
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-/* ---------- Summary ---------- */
-#summaryActions{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-}
-#summaryTitle{
-  color: #0f172a;
-}
-#summaryText{
+  margin-top: 6px;
+  min-height: 24px;
   color: var(--text-mid);
 }
 
-/* ---------- Leaderboard ---------- */
-#leaderboardList{
-  list-style: none;
-  padding: 0;
-  margin: 12px 0 18px;
-  display: grid;
-  gap: 10px;
-}
+/* Leaderboard list */
 #leaderboardList li{
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 6px;
   box-shadow: var(--shadow-sm);
-  padding: 12px 14px;
-  font-weight: 600;
-}
-
-/* ---------- Welcome – vstup, skupiny tlačítek ---------- */
-#welcome-screen p{ margin-bottom: 10px; }
-#welcome-screen > div{ display: flex; flex-wrap: wrap; gap: 10px; }
-#welcome-screen label{ font-weight: 600; color: var(--text-mid); }
-#streakInfo{
-  background: #f7fbff;
-  border: 1px solid var(--border);
-  color: #0f172a;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-  box-shadow: inset 0 -1px 0 #eef1f7;
-}
-
-/* ---------- Mikro-interakce ---------- */
-section:hover{ box-shadow: var(--shadow-hover); }
-input:hover, select:hover{
-  border-color: #d7dce8;
-  transform: translateY(-0.5px);
-}
-button:hover{ transform: translateY(-0.5px); }
-
-/* ---------- Responsivita ---------- */
-@media (max-width: 600px){
-  body{ padding: 18px 12px 40px; }
-  section{ padding: 20px; }
-  #welcome-screen > div{ gap: 8px; }
-  #questionText{ font-size: clamp(20px, 6vw, 28px); }
-  #answerInput{ width: 140px; }
+  transition: background .3s ease;
 }
