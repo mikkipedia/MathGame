@@ -1,5 +1,5 @@
 // ===============================================
-// MathGame – v5 (animované přechody + barevný feedback)
+// MathGame – v6 (opravené centrování sekcí; animace zachovány)
 // ===============================================
 document.addEventListener("DOMContentLoaded", () => {
   // --- Supabase (DOPLŇ SVÉ ÚDAJE) ---
@@ -85,10 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
       streak = 0;
       localStorage.setItem(LS_STREAK, "0");
     }
-    streakValueEl.textContent = String(streak);
-    bestStreakEl.textContent  = String(best);
+    if (streakValueEl) streakValueEl.textContent = String(streak);
+    if (bestStreakEl)  bestStreakEl.textContent  = String(best);
     if (dailyStatusEl) dailyStatusEl.textContent = (last === t) ? "splněno ✅" : "neplněno ❌";
-    hudStreak.textContent     = String(streak);
+    hudStreak.textContent = String(streak);
   }
 
   function completeDailyChallenge() {
@@ -103,15 +103,15 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(LS_LAST, t);
     localStorage.setItem(LS_STREAK, String(streak));
     localStorage.setItem(LS_BEST,   String(best));
-    streakValueEl.textContent = String(streak);
-    bestStreakEl.textContent  = String(best);
+    if (streakValueEl) streakValueEl.textContent = String(streak);
+    if (bestStreakEl)  bestStreakEl.textContent  = String(best);
     if (dailyStatusEl) dailyStatusEl.textContent = "splněno ✅";
-    hudStreak.textContent     = String(streak);
+    hudStreak.textContent = String(streak);
   }
 
   initStreak();
 
-  // --- Přepínání obrazovek s animací ---
+  // --- přepínání obrazovek (pomocí tříd) ---
   const screens = [welcomeScreen, quizScreen, summaryScreen, leaderboardScreen];
   function showSection(which) {
     screens.forEach(s => s.classList.remove("is-active"));
@@ -119,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (which === "quiz")    quizScreen.classList.add("is-active");
     else if (which === "summary") summaryScreen.classList.add("is-active");
     else if (which === "leaderboard") leaderboardScreen.classList.add("is-active");
+    // po přepnutí vyjedeme nahoru (na mobilu zabrání „odskoku“ mimo obraz)
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   function updateHud() {
@@ -163,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startLevel(val);
   }
   function loadNextQuestion(){
+    if (!isChallengeMode && questionIndex >= TOTAL_QUESTIONS) { endLevel(); return; }
     const q = isChallengeMode ? generateChallengeQuestion() : generateQuestionForLevel(currentLevel);
     currentCorrectAnswer = q.answer;
     questionText.textContent = q.text;
@@ -171,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     feedback.className = "chip";
     questionCard.classList.remove("flash-ok","flash-bad");
     updateHud();
-    if (!isChallengeMode && questionIndex>=TOTAL_QUESTIONS){ endLevel(); }
   }
   function endLevel(){
     const msg =
@@ -223,12 +225,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Handlery ---
   function goToMenu(){ showSection("welcome"); initStreak(); feedback.textContent=""; feedback.className="chip"; questionCard.classList.remove("flash-ok","flash-bad"); answerInput.value=""; isChallengeMode=false; }
 
-  document.getElementById("startBeginningBtn").addEventListener("click",()=>{
+  startBeginningBtn.addEventListener("click",()=>{
     const name=(playerNameInput.value||"").trim();
     if(!name){ alert("Prosím, zadej své jméno."); playerNameInput.focus(); return; }
     playerName=name; startFromBeginning();
   });
-  document.getElementById("startSelectedBtn").addEventListener("click",()=>{
+  startSelectedBtn.addEventListener("click",()=>{
     const name=(playerNameInput.value||"").trim();
     if(!name){ alert("Prosím, zadej své jméno."); playerNameInput.focus(); return; }
     playerName=name; startSelectedLevel();
@@ -251,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       else { feedback.className="chip chip--bad"; feedback.textContent=`Špatně. Správná je ${currentCorrectAnswer}.`; questionCard.classList.add("flash-bad"); }
       questionCard.addEventListener("animationend",()=>{ questionCard.classList.remove("flash-ok","flash-bad"); },{once:true});
       questionIndex++; updateHud(); setTimeout(loadNextQuestion, 650);
-      if(questionIndex>TOTAL_QUESTIONS) endLevel();
+      if(questionIndex> TOTAL_QUESTIONS) endLevel();
     } else {
       if(correct){ feedback.className="chip chip--ok"; feedback.textContent="Správně!"; questionCard.classList.add("flash-ok"); }
       else { feedback.className="chip chip--bad"; feedback.textContent=`Špatně. Správná je ${currentCorrectAnswer}.`; questionCard.classList.add("flash-bad"); }
@@ -262,7 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
   nextLevelBtn.addEventListener("click",()=> startLevel(currentLevel+1));
   retryBtn.addEventListener("click",()=> startLevel(currentLevel));
   restartBtn.addEventListener("click",()=> goToMenu());
-
   summaryStartBeginningBtn.addEventListener("click",()=>{
     showSection("welcome");
     const name=(playerNameInput.value||"").trim()||playerName;
