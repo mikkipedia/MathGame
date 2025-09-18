@@ -1,10 +1,7 @@
 // ===============================================
-// MathGame – logika aplikace (v2: Leaderboard + Denní výzva se streakem)
-// - 10 úrovní × 10 otázek, rostoucí obtížnost
-// - ukládá {name, highscore} do Supabase (tabulka "scores": name TEXT UNIQUE, highscore INT)
-// - leaderboard z DB (TOP 10 podle highscore)
-// - denní výzva (1 otázka denně) + streak (localStorage)
-// - oddělené od vzhledu (CSS je v externím souboru)
+// MathGame – logika aplikace (v3)
+// + Leaderboard (TOP10) a Denní výzva se streakem
+// + Hrát od začátku (Úroveň 1) a Spustit vybranou úroveň
 // ===============================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,12 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const TOTAL_QUESTIONS = 10;
   let playerName = "";
   let currentLevel = 1;          // 1..10
-  let questionIndex = 0;         // 0..9 (index v rámci levelu)
+  let questionIndex = 0;         // 0..9
   let score = 0;                 // správné odpovědi v AKTUÁLNÍ úrovni
   let currentCorrectAnswer = null;
 
-  // Režimy: klasická hra vs denní výzva
-  let isChallengeMode = false;   // true = Denní výzva (1 otázka)
+  let isChallengeMode = false;   // Denní výzva (1 otázka)
 
   // --- 3) DOM prvky --------------------------------------------------------
   const welcomeScreen  = document.getElementById("welcome-screen");
@@ -40,7 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const answerInput    = document.getElementById("answerInput");
   const feedback       = document.getElementById("feedback");
 
-  const startBtn       = document.getElementById("startBtn");
+  const startBeginningBtn = document.getElementById("startBeginningBtn");
+  const levelSelect       = document.getElementById("levelSelect");
+  const startSelectedBtn  = document.getElementById("startSelectedBtn");
+
   const dailyBtn       = document.getElementById("dailyBtn");
   const showLbBtn      = document.getElementById("showLbBtn");
 
@@ -49,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const retryBtn       = document.getElementById("retryBtn");
   const restartBtn     = document.getElementById("restartBtn");
   const summaryLbBtn   = document.getElementById("summaryLbBtn");
+  const summaryStartBeginningBtn = document.getElementById("summaryStartBeginningBtn");
+  const summaryGoToLevelSelectBtn = document.getElementById("summaryGoToLevelSelectBtn");
 
   const summaryTitle   = document.getElementById("summaryTitle");
   const summaryText    = document.getElementById("summaryText");
@@ -56,20 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const leaderboardList= document.getElementById("leaderboardList");
   const lbBackBtn      = document.getElementById("lbBackBtn");
 
-  // Streak info na uvodní obrazovce
+  // Streak info na úvodní obrazovce
   const streakValueEl  = document.getElementById("streakValue");
   const bestStreakEl   = document.getElementById("bestStreakValue");
   const dailyStatusEl  = document.getElementById("dailyStatus");
 
   // --- 4) Streak (localStorage) -------------------------------------------
-  // Klíče v localStorage
   const LS_STREAK = "mg_streak";
   const LS_BEST   = "mg_bestStreak";
   const LS_LAST   = "mg_lastChallengeCompleted"; // YYYY-MM-DD
 
   function todayISO() {
     const d = new Date();
-    // bereme místní datum bez času
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
@@ -84,22 +83,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  // Inicializace streaku při startu aplikace
   function initStreak() {
     let streak = Number(localStorage.getItem(LS_STREAK) || "0");
     let best   = Number(localStorage.getItem(LS_BEST)   || "0");
-    const last = localStorage.getItem(LS_LAST); // může být null
-
+    const last = localStorage.getItem(LS_LAST);
     const t = todayISO();
     const y = ydayISO();
 
-    // Pokud poslední splněný den není dnes ani včera, streak reset
     if (last && last !== t && last !== y) {
       streak = 0;
       localStorage.setItem(LS_STREAK, "0");
     }
 
-    // UI
     streakValueEl.textContent = String(streak);
     bestStreakEl.textContent  = String(best);
     dailyStatusEl.textContent = (last === t) ? "splněno ✅" : "neplněno ❌";
@@ -113,22 +108,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let best   = Number(localStorage.getItem(LS_BEST)   || "0");
 
     if (last === t) {
-      // už splněno dnes — nic nezvyšujeme
+      // už splněno dnes
     } else if (last === ydayISO() || !last) {
-      // navazujeme na včerejšek (nebo první den)
       streak = streak + 1;
     } else {
-      // byl výpadek => začínáme znovu od 1
       streak = 1;
     }
-
     if (streak > best) best = streak;
 
     localStorage.setItem(LS_LAST, t);
     localStorage.setItem(LS_STREAK, String(streak));
     localStorage.setItem(LS_BEST,   String(best));
 
-    // UI refresh
     streakValueEl.textContent = String(streak);
     bestStreakEl.textContent  = String(best);
     dailyStatusEl.textContent = "splněno ✅";
@@ -155,10 +146,9 @@ document.addEventListener("DOMContentLoaded", () => {
       progressLabel.textContent = `Otázka 1/1`;
       scoreLabel.textContent = `—`;
     }
-    // streak v HUDu je aktualizován v initStreak/completeDailyChallenge
   }
 
-  // --- 6) Generátor otázek podle úrovně -----------------------------------
+  // --- 6) Generátor otázek -------------------------------------------------
   function rand(max) { return Math.floor(Math.random() * (max + 1)); } // 0..max
 
   function generateQuestionForLevel(level) {
@@ -180,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (level === 8) {
       a = rand(100); b = rand(100); if (b > a) [a, b] = [b, a]; op = "-"; ans = a - b;
     } else {
-      // 9–10: mix +/-
       if (Math.random() < 0.5) {
         a = rand(100); b = rand(100); op = "+"; ans = a + b;
       } else {
@@ -191,11 +180,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function generateChallengeQuestion() {
-    // Denní výzva – 1 otázka, mírně náročnější mix (do 100)
     return generateQuestionForLevel(9 + (Math.random() < 0.5 ? 0 : 1));
   }
 
-  // --- 7) Průběh: klasická hra --------------------------------------------
+  // --- 7) Průběh hry -------------------------------------------------------
   function startLevel(level) {
     isChallengeMode = false;
     currentLevel = level;
@@ -203,6 +191,20 @@ document.addEventListener("DOMContentLoaded", () => {
     score = 0;
     showSection("quiz");
     loadNextQuestion();
+  }
+
+  function startFromBeginning() {
+    startLevel(1);
+  }
+
+  function startSelectedLevel() {
+    const val = Number(levelSelect.value);
+    if (Number.isNaN(val) || val < 1 || val > 10) {
+      alert("Vyber úroveň 1–10.");
+      levelSelect.focus();
+      return;
+    }
+    startLevel(val);
   }
 
   function loadNextQuestion() {
@@ -218,7 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
       feedback.textContent = "";
       updateHud();
     } else {
-      // Challenge režim – vždy jen 1 otázka
       const q = generateChallengeQuestion();
       currentCorrectAnswer = q.answer;
       questionText.textContent = q.text;
@@ -239,10 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
     summaryText.textContent = `${msg}  Správně ${score} z ${TOTAL_QUESTIONS}.`;
     showSection("summary");
 
-    // Poslední úroveň
     nextLevelBtn.style.display = (currentLevel >= 10) ? "none" : "inline-block";
 
-    // uložení high-score (nejvyšší dosažená úroveň)
+    // uložit nejvyšší dosaženou úroveň
     saveHighScore(currentLevel).catch((e) => console.error(e));
   }
 
@@ -250,14 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function startDailyChallenge() {
     isChallengeMode = true;
     showSection("quiz");
-    questionIndex = 0; // zde nehraje roli, ale pro konzistenci
+    questionIndex = 0;
     loadNextQuestion();
   }
 
   function finishDailyChallenge(correct) {
     showSection("summary");
-    nextLevelBtn.style.display = "none"; // challenge nemá „další úroveň“
-    retryBtn.style.display = "none";     // ani opakování v rámci summary
+    nextLevelBtn.style.display = "none";
+    retryBtn.style.display = "none";
 
     if (correct) {
       summaryTitle.textContent = "Denní výzva splněna!";
@@ -266,11 +266,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       summaryTitle.textContent = "Denní výzva nesplněna";
       summaryText.textContent  = "Nevadí, zkus to znovu z domovské obrazovky.";
-      // Streak se nezvyšuje; reset se řeší při dalším dni v initStreak()
     }
   }
 
-  // --- 9) Supabase: uložení high-score ------------------------------------
+  // --- 9) Supabase: uložení + načtení --------------------------------------
   async function saveHighScore(levelReached) {
     if (!playerName) return;
 
@@ -295,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- 10) Supabase: načtení leaderboardu ---------------------------------
   async function loadLeaderboard() {
     leaderboardList.innerHTML = "<li>Načítám…</li>";
     try {
@@ -323,8 +321,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- 11) Handlery událostí ----------------------------------------------
-  startBtn.addEventListener("click", () => {
+  // --- 10) Handlery událostí ----------------------------------------------
+  startBeginningBtn.addEventListener("click", () => {
     const name = (playerNameInput.value || "").trim();
     if (!name) {
       alert("Prosím, zadej své jméno.");
@@ -332,12 +330,22 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     playerName = name;
-    startLevel(1);
+    startFromBeginning();
+  });
+
+  startSelectedBtn.addEventListener("click", () => {
+    const name = (playerNameInput.value || "").trim();
+    if (!name) {
+      alert("Prosím, zadej své jméno.");
+      playerNameInput.focus();
+      return;
+    }
+    playerName = name;
+    startSelectedLevel();
   });
 
   dailyBtn.addEventListener("click", () => {
-    // Denní výzva jde spustit i bez jména (neukládá se do DB)
-    startDailyChallenge();
+    startDailyChallenge(); // denní výzva neukládá do DB, jméno není nutné
   });
 
   showLbBtn.addEventListener("click", async () => {
@@ -382,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateHud();
       setTimeout(loadNextQuestion, 700);
     } else {
-      // Denní výzva: vyhodnotíme a rovnou ukončíme režim
+      // Denní výzva – po jedné otázce konec
       if (correct) {
         feedback.style.color = "green";
         feedback.textContent = "Správně!";
@@ -405,8 +413,26 @@ document.addEventListener("DOMContentLoaded", () => {
   restartBtn.addEventListener("click", () => {
     showSection("welcome");
     playerNameInput.focus();
-    // Po návratu na úvod obnovíme info o streaku
     initStreak();
+  });
+
+  // nové rychlé akce v summary
+  summaryStartBeginningBtn.addEventListener("click", () => {
+    showSection("welcome");
+    // pokud je zadané jméno, rovnou startneme 1. úroveň
+    const name = (playerNameInput.value || "").trim() || playerName;
+    if (!name) {
+      playerName = "";
+      playerNameInput.focus();
+    } else {
+      playerName = name;
+      startFromBeginning();
+    }
+  });
+
+  summaryGoToLevelSelectBtn.addEventListener("click", () => {
+    showSection("welcome");
+    levelSelect.focus();
   });
 
   // Start: fokus do jména
