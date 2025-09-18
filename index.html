@@ -4,39 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MathGame – 2. třída</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="script.js"></script>
+
+  <!-- Theme toggle (dark / light) -->
   <script>
-    // Uložení a načtení dark mode nastavení
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("mathgame-theme");
       if (saved === "dark") document.documentElement.classList.add("dark");
-
       const toggle = document.getElementById("themeToggle");
-      toggle.addEventListener("click", () => {
-        document.documentElement.classList.toggle("dark");
-        const isDark = document.documentElement.classList.contains("dark");
-        localStorage.setItem("mathgame-theme", isDark ? "dark" : "light");
-      });
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          document.documentElement.classList.toggle("dark");
+          const isDark = document.documentElement.classList.contains("dark");
+          localStorage.setItem("mathgame-theme", isDark ? "dark" : "light");
+        });
+      }
     });
   </script>
 </head>
 <body>
   <!-- Start obrazovka -->
-  <section id="welcome-screen">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
+  <section id="welcome-screen" class="screen is-active">
+    <div class="screen-head">
       <h1>Procvičování matematiky – 2. třída</h1>
-      <!-- Přepínač režimu -->
-      <button id="themeToggle" title="Přepnout světlý / tmavý režim">🌓</button>
+      <button id="themeToggle" class="icon-btn" title="Přepnout světlý / tmavý režim">🌓</button>
     </div>
 
     <p>
@@ -44,10 +45,10 @@
       <input id="playerName" type="text" placeholder="Zadej své jméno" />
     </p>
 
-    <div style="margin-bottom: .5rem;">
+    <div class="btn-row">
       <button id="startBeginningBtn" title="Začít od úrovně 1">Hrát od začátku</button>
 
-      <label for="levelSelect" style="margin-left:.5rem;">Vybraná úroveň:</label>
+      <label for="levelSelect">Vybraná úroveň:</label>
       <select id="levelSelect">
         <option value="1" selected>1</option>
         <option value="2">2</option><option value="3">3</option>
@@ -59,12 +60,12 @@
       <button id="startSelectedBtn">Spustit úroveň</button>
     </div>
 
-    <div>
+    <div class="btn-row">
       <button id="dailyBtn">Denní výzva</button>
       <button id="showLbBtn">Žebříček</button>
     </div>
 
-    <p id="streakInfo" style="margin-top:.75rem;">
+    <p id="streakInfo" class="streak-info">
       🔥 Streak: <strong id="streakValue">0</strong>
       (nejlepší: <span id="bestStreakValue">0</span>)
       · Stav dnešní výzvy: <span id="dailyStatus">neplněno</span>
@@ -72,42 +73,42 @@
   </section>
 
   <!-- Herní obrazovka -->
-  <section id="quiz-screen" style="display:none;">
+  <section id="quiz-screen" class="screen">
     <div id="hud">
       <strong id="levelLabel">Úroveň 1</strong> ·
       <span id="progressLabel">Otázka 1/10</span> ·
       <span id="scoreLabel">Skóre: 0</span> ·
       🔥 <span id="hudStreak">0</span>
-      <button id="menuBtn" style="margin-left:.5rem;">Menu</button>
+      <button id="menuBtn" class="ghost-btn">Menu</button>
     </div>
 
-    <div id="question-container">
+    <div id="question-container" class="card">
       <div id="questionText">?</div>
       <input id="answerInput" type="number" inputmode="numeric" placeholder="Odpověď" />
       <button id="submitBtn">Odpovědět</button>
-      <div id="feedback" aria-live="polite"></div>
+      <div id="feedback" class="chip" aria-live="polite"></div>
     </div>
   </section>
 
   <!-- Shrnutí -->
-  <section id="summary-screen" style="display:none;">
+  <section id="summary-screen" class="screen">
     <h2 id="summaryTitle">Shrnutí</h2>
     <p id="summaryText"></p>
-    <div id="summaryActions">
+    <div id="summaryActions" class="btn-row">
       <button id="nextLevelBtn">Další úroveň</button>
       <button id="retryBtn">Opakovat úroveň</button>
-      <button id="restartBtn">Zpět na začátek</button>
+      <button id="restartBtn" class="ghost-btn">Zpět na začátek</button>
       <button id="summaryLbBtn">Žebříček</button>
-      <button id="summaryStartBeginningBtn">Hrát od začátku</button>
-      <button id="summaryGoToLevelSelectBtn">Vybrat úroveň…</button>
+      <button id="summaryStartBeginningBtn" title="Úroveň 1">Hrát od začátku</button>
+      <button id="summaryGoToLevelSelectBtn" title="Vybrat úroveň">Vybrat úroveň…</button>
     </div>
   </section>
 
   <!-- Žebříček -->
-  <section id="leaderboard-screen" style="display:none;">
+  <section id="leaderboard-screen" class="screen">
     <h2>Žebříček – TOP 10</h2>
     <ol id="leaderboardList"></ol>
-    <button id="lbBackBtn">Zpět</button>
+    <button id="lbBackBtn" class="ghost-btn">Zpět</button>
   </section>
 </body>
 </html>
