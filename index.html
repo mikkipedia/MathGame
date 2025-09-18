@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MathGame – 2. třída</title>
 
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Nový vzhled -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- Supabase knihovna MUSÍ být načtena dřív než náš skript -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Logika aplikace -->
+  <!-- Logika aplikace (beze změny) -->
   <script defer src="script.js"></script>
 </head>
 <body>
@@ -23,10 +29,8 @@
     </p>
 
     <div style="margin-bottom: .5rem;">
-      <!-- 1) Hrát od začátku = Úroveň 1 -->
       <button id="startBeginningBtn" title="Začít od úrovně 1">Hrát od začátku</button>
 
-      <!-- 2) Spustit vybranou úroveň -->
       <label for="levelSelect" style="margin-left:.5rem;">Vybraná úroveň:</label>
       <select id="levelSelect">
         <option value="1" selected>1</option>
@@ -58,7 +62,6 @@
       <span id="progressLabel">Otázka 1/10</span> ·
       <span id="scoreLabel">Skóre: 0</span> ·
       🔥 <span id="hudStreak">0</span>
-      <!-- NOVÉ: tlačítko Menu (návrat na úvod) -->
       <button id="menuBtn" style="margin-left:.5rem;">Menu</button>
     </div>
 
@@ -79,7 +82,6 @@
       <button id="retryBtn">Opakovat úroveň</button>
       <button id="restartBtn">Zpět na začátek</button>
       <button id="summaryLbBtn">Žebříček</button>
-      <!-- rychlé akce -->
       <button id="summaryStartBeginningBtn" title="Úroveň 1">Hrát od začátku</button>
       <button id="summaryGoToLevelSelectBtn" title="Vybrat úroveň">Vybrat úroveň…</button>
     </div>
@@ -88,9 +90,7 @@
   <!-- Žebříček (TOP10 z DB) -->
   <section id="leaderboard-screen" style="display:none;">
     <h2>Žebříček – TOP 10 (dle nejvyšší úrovně)</h2>
-    <ol id="leaderboardList">
-      <!-- dynamicky doplněno JS -->
-    </ol>
+    <ol id="leaderboardList"></ol>
     <button id="lbBackBtn">Zpět</button>
   </section>
 </body>
