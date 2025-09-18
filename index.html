@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matematická hra - 2. třída</title>
+  <!-- Odkaz na CSS soubor -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase JS knihovna (cdn) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Náš JavaScript soubor -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+  <div id="start-screen">
+    <h1>Procvičování matematiky – 2.&nbsp;třída</h1>
+    <p>Jméno hráče: <input type="text" id="playerName" placeholder="Zadej své jméno" /></p>
+    <button id="startBtn">Začít hru</button>
+  </div>
+
+  <div id="question-screen" style="display:none;">
+    <h2 id="levelTitle"></h2>
+    <p id="questionText"></p>
+    <input type="number" id="answerInput" placeholder="Vaše odpověď" />
+    <button id="submitAnswerBtn">Odpovědět</button>
+    <p id="feedback"></p>
+  </div>
+
+  <div id="result-screen" style="display:none;">
+    <h2>Konec hry</h2>
+    <p id="finalScoreText"></p>
+    <button id="restartBtn">Hrát znovu</button>
+  </div>
+
+</body>
+</html>
