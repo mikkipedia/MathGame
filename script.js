@@ -1,6 +1,6 @@
 // Supabase - inicializace klienta (DOPLŇTE své údaje projektu)
-const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";  // sem vložte URL svého projektu
-const SUPABASE_ANON_KEY = "YOUR_ANON_PUBLIC_API_KEY";        // sem vložte svůj anon veřejný klíč
+const SUPABASE_URL = "https://ypdotsfelxlkvdlicynd.supabase.co";  // sem vložte URL svého projektu
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlwZG90c2ZlbHhsa3ZkbGljeW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgxNjM2NjksImV4cCI6MjA3MzczOTY2OX0.pJg2tCaECGDIvJOrRDSQd714hmmskxxfkZf8YolmGt8";        // sem vložte svůj anon veřejný klíč
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Hra – proměnné stavu
