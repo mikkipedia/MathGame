@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MathGame – 2. třída</title>
 
-  <!-- Externí CSS (ponecháš svůj style.css) -->
+  <!-- Tvoje CSS ponech stejné (můžeš si ho upravit dle libosti) -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- Supabase knihovna MUSÍ být načtena dřív než náš skript -->
@@ -17,11 +17,22 @@
   <!-- Start obrazovka -->
   <section id="welcome-screen">
     <h1>Procvičování matematiky – 2. třída</h1>
+
     <p>
       Jméno hráče:
       <input id="playerName" type="text" placeholder="Zadej své jméno" />
     </p>
-    <button id="startBtn">Začít hru</button>
+    <div>
+      <button id="startBtn">Začít hru</button>
+      <button id="dailyBtn" title="Denní výzva (1 otázka)">Denní výzva</button>
+      <button id="showLbBtn" title="Žebříček TOP 10">Žebříček</button>
+    </div>
+
+    <p id="streakInfo">
+      🔥 Streak: <strong id="streakValue">0</strong>
+      (nejlepší: <span id="bestStreakValue">0</span>)
+      · Stav dnešní výzvy: <span id="dailyStatus">neplněno</span>
+    </p>
   </section>
 
   <!-- Herní obrazovka -->
@@ -29,7 +40,8 @@
     <div id="hud">
       <strong id="levelLabel">Úroveň 1</strong> ·
       <span id="progressLabel">Otázka 1/10</span> ·
-      <span id="scoreLabel">Skóre: 0</span>
+      <span id="scoreLabel">Skóre: 0</span> ·
+      🔥 <span id="hudStreak">0</span>
     </div>
 
     <div id="question-container">
@@ -40,15 +52,25 @@
     </div>
   </section>
 
-  <!-- Shrnutí úrovně -->
+  <!-- Shrnutí -->
   <section id="summary-screen" style="display:none;">
     <h2 id="summaryTitle">Shrnutí</h2>
     <p id="summaryText"></p>
-    <div>
+    <div id="summaryActions">
       <button id="nextLevelBtn">Další úroveň</button>
       <button id="retryBtn">Opakovat úroveň</button>
       <button id="restartBtn">Zpět na začátek</button>
+      <button id="summaryLbBtn">Žebříček</button>
     </div>
+  </section>
+
+  <!-- Žebříček (TOP10 z DB) -->
+  <section id="leaderboard-screen" style="display:none;">
+    <h2>Žebříček – TOP 10 (dle nejvyšší úrovně)</h2>
+    <ol id="leaderboardList">
+      <!-- dynamicky doplněno JS -->
+    </ol>
+    <button id="lbBackBtn">Zpět</button>
   </section>
 </body>
 </html>
