@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MathGame – 2. třída</title>
 
-  <!-- Tvoje CSS ponech stejné (můžeš si ho upravit dle libosti) -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- Supabase knihovna MUSÍ být načtena dřív než náš skript -->
@@ -22,13 +21,30 @@
       Jméno hráče:
       <input id="playerName" type="text" placeholder="Zadej své jméno" />
     </p>
+
+    <div style="margin-bottom: .5rem;">
+      <!-- 1) Hrát od začátku = Úroveň 1 -->
+      <button id="startBeginningBtn" title="Začít od úrovně 1">Hrát od začátku</button>
+
+      <!-- 2) Spustit vybranou úroveň -->
+      <label for="levelSelect" style="margin-left:.5rem;">Vybraná úroveň:</label>
+      <select id="levelSelect">
+        <option value="1" selected>1</option>
+        <option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option>
+        <option value="6">6</option><option value="7">7</option>
+        <option value="8">8</option><option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+      <button id="startSelectedBtn">Spustit úroveň</button>
+    </div>
+
     <div>
-      <button id="startBtn">Začít hru</button>
       <button id="dailyBtn" title="Denní výzva (1 otázka)">Denní výzva</button>
       <button id="showLbBtn" title="Žebříček TOP 10">Žebříček</button>
     </div>
 
-    <p id="streakInfo">
+    <p id="streakInfo" style="margin-top:.75rem;">
       🔥 Streak: <strong id="streakValue">0</strong>
       (nejlepší: <span id="bestStreakValue">0</span>)
       · Stav dnešní výzvy: <span id="dailyStatus">neplněno</span>
@@ -61,6 +77,9 @@
       <button id="retryBtn">Opakovat úroveň</button>
       <button id="restartBtn">Zpět na začátek</button>
       <button id="summaryLbBtn">Žebříček</button>
+      <!-- nové rychlé akce -->
+      <button id="summaryStartBeginningBtn" title="Úroveň 1">Hrát od začátku</button>
+      <button id="summaryGoToLevelSelectBtn" title="Vybrat úroveň">Vybrat úroveň…</button>
     </div>
   </section>
 
