@@ -129,7 +129,7 @@ label{font-weight:600;color:var(--text-mid)}
 /* Zvýšení rozestupu v mobilní verzi */
 @media (max-width: 600px) {
   #submitBtn {
-    margin-top: 16px; /* větší mezera než defaultní */
+    margin-top: 24px; /* větší mezera než defaultní */
   }
 }
 
