@@ -133,3 +133,16 @@ label{font-weight:600;color:var(--text-mid)}
   }
 }
 
+/* Odstranění bílého artefaktu vedle tlačítka */
+#answerInput,
+#submitBtn {
+  outline: none; /* odstraní systémový outline */
+}
+
+#answerInput:focus,
+#submitBtn:focus {
+  outline: none; /* zůstane bez bílého kroužku i při focusu */
+  box-shadow: none; /* odstraní případný stín */
+}
+
+
