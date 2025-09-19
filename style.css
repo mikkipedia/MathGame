@@ -125,3 +125,11 @@ label{font-weight:600;color:var(--text-mid)}
   section{padding:18px}
   #answerInput{width:140px}
 }
+
+/* Zvýšení rozestupu v mobilní verzi */
+@media (max-width: 600px) {
+  #submitBtn {
+    margin-top: 16px; /* větší mezera než defaultní */
+  }
+}
+
